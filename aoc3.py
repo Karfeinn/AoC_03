@@ -1,30 +1,43 @@
 def battery_input():
-    with open("battery.txt", mode="r", encoding="utf-8") as file:
+    with open("test.txt", mode="r", encoding="utf-8") as file:
         batteries = file.read().split("\n")
     return batteries
 
 def find_largest_joltage(battery):
-    max_jolt = 0
-    max_index = -1
+    battery_list = list(battery)
+    dict_activate = {}
+    i = "9"
+    while len(dict_activate) != 12:
+        b = False
+        for index, x in enumerate(reversed(battery_list)) :
+            true_index = len(battery_list) - 1 - index
+            if x == i :
+                if dict_activate.get(true_index, 0) != 0 :
+                    continue
+                if dict_activate :
+                    if dict_activate[min(dict_activate)] > i and len(battery_list)-1 - min(dict_activate) > 12 - len(dict_activate) and min(dict_activate) > true_index:
+                        continue
+                dict_activate[true_index] = x
+                b = True
+                break
+        if b :
+            continue
+        i = str(int(i) - 1)
+    return dict_activate
 
-    max_secondary_jolt = 0
-
-    for i in range(0, len(battery)-1): # on ne prends pas le dernier exprès
-        if int(battery[i]) > max_jolt :
-            max_jolt = int(battery[i])
-            max_index = i
-
-    for j in range(max_index + 1, len(battery)):
-        if int(battery[j]) > max_secondary_jolt :
-            max_secondary_jolt = int(battery[j])
-    
-    return(int(str(max_jolt)+str(max_secondary_jolt)))
+def get_largest_joltage(battery):
+    list_activate = sorted(find_largest_joltage(battery).items())
+    voltage = ""
+    for values in list_activate:
+        voltage = voltage + values[1]
+    print(voltage)
+    return int(voltage)
 
 def function():
     batteries = battery_input()
     joltage_list = []
     for battery in batteries:
-        joltage_list.append(find_largest_joltage(battery))
+        joltage_list.append(get_largest_joltage(battery))
     print(sum(joltage_list))
 
 function()
